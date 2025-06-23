@@ -1,5 +1,5 @@
 ---
-layout: ../layouts/Layout.astro
+import Layout from '../../layouts/Layout.astro';
 ---
 
 <script type="text/javascript">
@@ -17,4 +17,6 @@ layout: ../layouts/Layout.astro
   window.onload = getMessage;
 </script>
 
-<div id="msg">Cargando mensaje...</div>
+<Layout>
+  <div id="msg">Cargando mensaje...</div>
+</Layout>
