@@ -1,0 +1,63 @@
+---
+import Layout from '../layouts/Layout.astro';
+layout: Layout
+---
+
+<h1>Enviar mensaje secreto</h1>
+<form id="secretForm" style="max-width: 350px; margin: 2em auto; display: flex; flex-direction: column; align-items: center; background: #f8f8f8; border-radius: 10px; box-shadow: 0 2px 12px #0001; padding: 2em 1.5em;">
+  <textarea name="text" required placeholder="Escribe tu mensaje secreto..." rows="3" style="width: 100%; min-width: 220px; max-width: 100%; min-height: 60px; max-height: 120px; resize: vertical; border-radius: 6px; border: 1px solid #b2e59e; padding: 0.7em; font-size: 1em;"></textarea>
+  <br />
+  <button type="submit" style="background: #b2e59e; color: #222; border: none; border-radius: 6px; padding: 0.6em 1.2em; font-weight: bold; cursor: pointer; transition: background 0.2s;">Generar enlace secreto</button>
+</form>
+<div id="result" style="margin-top:1.5em;"></div>
+<div id="toast" style="display:none;position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:1em 2em;border-radius:8px;z-index:1000;box-shadow:0 2px 8px #0008;font-size:1.1em;"></div>
+
+<script type="text/javascript">
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 3500);
+  }
+  document.getElementById('secretForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const formEl = e.target;
+    const formData = new FormData(formEl);
+    const text = formData.get('text');
+    const response = await fetch('/api/crear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await response.json();
+    const resultDiv = document.getElementById('result');
+    if (data.url) {
+      let url = data.url;
+      if (!/^https?:\/\//.test(url)) {
+        url = window.location.origin + url;
+      }
+      resultDiv.innerHTML = `
+        <div style='margin-top:2em;padding:1em 1.5em;background:#e3f6d5;border-radius:8px;border:1px solid #b2e59e;text-align:center;'>
+          <p style='margin:0 0 0.5em 0;font-weight:bold;'>Enlace generado! Copialo y compartelo:</p>
+          <input id='secretUrl' style='width:100%;margin-bottom:0.5em;' value="${url}" readonly />
+          <button id='copyBtn' type='button' style='margin-top:0.5em'>Copiar enlace</button>
+        </div>
+      `;
+      resultDiv.style.display = 'block';
+      setTimeout(() => {
+        const copyBtn = document.getElementById('copyBtn');
+        if (copyBtn) {
+          copyBtn.onclick = function() {
+            const url = document.getElementById('secretUrl').value;
+            navigator.clipboard.writeText(url);
+            showToast('Enlace copiado al portapapeles!');
+          };
+        }
+      }, 0);
+      formEl.reset();
+    } else {
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `<span style='color:red'>${data.error || 'Error'}</span>`;
+    }
+  };
+</script>

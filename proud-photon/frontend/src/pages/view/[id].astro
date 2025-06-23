@@ -1,0 +1,20 @@
+---
+layout: ../layouts/Layout.astro
+---
+
+<script type="text/javascript">
+  async function getMessage() {
+    const id = window.location.pathname.split('/').pop();
+    const res = await fetch(`/api/message/${id}`);
+    const data = await res.json();
+    const msgDiv = document.getElementById('msg');
+    if (data.text) {
+      msgDiv.innerHTML = `<h2>Mensaje secreto:</h2><div style='background:#222;padding:1em;border-radius:8px'>${data.text}</div>`;
+    } else {
+      msgDiv.innerHTML = `<b>Este mensaje ya fue leído o no existe.</b>`;
+    }
+  }
+  window.onload = getMessage;
+</script>
+
+<div id="msg">Cargando mensaje...</div>
