@@ -2,6 +2,51 @@
 import Layout from '../../layouts/Layout.astro';
 ---
 
+<style>
+  body {
+    background: linear-gradient(135deg, #232526 0%, #414345 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Inter', Arial, sans-serif;
+  }
+  .secret-title {
+    text-align: center;
+    font-family: 'Caveat', 'Comic Sans MS', cursive, sans-serif;
+    font-size: 2.1em;
+    margin-top: 1.5em;
+    color: #ffe066;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+  }
+  .secret-box {
+    background: #222b;
+    padding: 1.2em 2em;
+    max-width: 350px;
+    margin: 2em auto 0 auto;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px #0005;
+    text-align: center;
+    font-size: 1.15em;
+    color: #fff;
+    word-break: break-word;
+    border: 2px dashed #ffe066;
+    backdrop-filter: blur(2px);
+  }
+  .center-container {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<!-- Google Fonts para títulos divertidos -->
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+
 <script type="text/javascript">
   async function getMessage() {
     const id = window.location.pathname.split('/').pop();
@@ -9,14 +54,16 @@ import Layout from '../../layouts/Layout.astro';
     const data = await res.json();
     const msgDiv = document.getElementById('msg');
     if (data.text) {
-      msgDiv.innerHTML = `<h2 style='text-align:center;'>Mensaje secreto:</h2><div style='background:#222;padding:1em 2em;max-width:350px;margin:1.5em auto 0 auto;border-radius:10px;box-shadow:0 2px 12px #0003;text-align:center;font-size:1.1em;'>${data.text}</div>`;
+      msgDiv.innerHTML = `<div class='secret-title'>🤫 Mensaje secreto</div><div class='secret-box'>${data.text}</div>`;
     } else {
-      msgDiv.innerHTML = `<b>Este mensaje ya fue leído o no existe.</b>`;
+      msgDiv.innerHTML = `<div class='secret-title'>🕵️‍♂️ Mensaje secreto</div><div class='secret-box'><b>Este mensaje ya fue leído o no existe.</b></div>`;
     }
   }
   window.onload = getMessage;
 </script>
 
 <Layout>
-  <div id="msg">Cargando mensaje...</div>
+  <div class="center-container">
+    <div id="msg">Cargando mensaje...</div>
+  </div>
 </Layout>
